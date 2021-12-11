@@ -15,7 +15,7 @@ services:
     image: datalust/seq:latest
 
   sqldata:
-    image: mcr.microsoft.com/mssql/server:2017-latest 
+    image: mcr.microsoft.com/mssql/server:2019-latest 
 
   zipkin:
     image: openzipkin/zipkin-slim
@@ -28,6 +28,8 @@ services:
     depends_on:
       - identity-api
       - redis
+    networks:
+      - eshopdapr
 
   basket-api-dapr:
     image: "daprio/daprd:1.4.0"
@@ -40,7 +42,8 @@ services:
     build:
       context: .
       dockerfile: src/Web/BlazorClient.Host/Dockerfile
-
+    networks:
+      - eshopdapr
   catalog-api:
     image: ${REGISTRY:-eshopdapr}/catalog.api:${TAG:-latest}
     build:
@@ -48,7 +51,9 @@ services:
       dockerfile: src/Services/Catalog/Catalog.API/Dockerfile
     depends_on:
       - sqldata
-
+      - placement
+    networks:
+      - eshopdapr
   catalog-api-dapr:
     image: "daprio/daprd:1.4.0"
     network_mode: "service:catalog-api"
@@ -62,7 +67,9 @@ services:
       dockerfile: src/Services/Identity/Identity.API/Dockerfile
     depends_on:
       - sqldata
-
+      - placement
+    networks:
+      - eshopdapr
   identity-api-dapr:
     image: "daprio/daprd:1.4.0"
     network_mode: "service:identity-api"
@@ -76,7 +83,9 @@ services:
       dockerfile: src/Services/Ordering/Ordering.API/Dockerfile
     depends_on:
       - sqldata
-
+      - placement
+    networks:
+      - eshopdapr
   ordering-api-dapr:
     image: "daprio/daprd:1.4.0"
     network_mode: "service:ordering-api"
@@ -88,7 +97,8 @@ services:
     build:
       context: .
       dockerfile: src/Services/Payment/Payment.API/Dockerfile
-
+    networks:
+      - eshopdapr
   payment-api-dapr:
     image: "daprio/daprd:1.4.0"
     network_mode: "service:payment-api"
@@ -106,7 +116,8 @@ services:
       - identity-api
       - ordering-api
       - sqldata
-
+    networks:
+      - eshopdapr
   webshoppingagg-dapr:
     image: "daprio/daprd:1.4.0"
     network_mode: "service:webshoppingagg"
@@ -115,7 +126,8 @@ services:
 
   webshoppingapigw:
     image: envoyproxy/envoy:v1.14.2
-
+    networks:
+      - eshopdapr
   webshoppingapigw-dapr:
     image: "daprio/daprd:1.4.0"
     network_mode: "service:webshoppingapigw"
@@ -124,6 +136,12 @@ services:
 
   webstatus:
     image: xabarilcoding/healthchecksui:5.0.0
-
+    networks:
+      - eshopdapr
   dapr-placement:
-    image: "daprio/dapr:1.0.0"
+    image: "daprio/dapr:1.4.0"
+    networks:
+      - eshopdapr
+  
+  networks:
+    eshopdapr:

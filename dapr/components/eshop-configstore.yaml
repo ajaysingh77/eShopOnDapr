@@ -1,0 +1,15 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: redisconfigstore
+  namespace: eshop
+spec:
+  type: configuration.redis
+  version: v1
+  metadata:
+  - name: redisHost
+    value: redis:6379
+  - name: redisPassword
+    secretKeyRef:
+      name: State.RedisPassword
+      key: State.RedisPassword
