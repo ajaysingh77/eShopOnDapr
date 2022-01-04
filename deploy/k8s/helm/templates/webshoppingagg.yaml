@@ -10,6 +10,7 @@ data:
   ASPNETCORE_ENVIRONMENT: Development
   BasketUrlHC: http://basket-api/hc
   CatalogUrlHC: http://catalog-api/hc
+  IdentityUrl: http://identity-api
   IdentityUrlExternal: http://{{ .Values.externalDnsNameOrIP}}:30008
   IdentityUrlHC: http://identity-api/hc
   PaymentUrlHC: http://payment-api/hc
