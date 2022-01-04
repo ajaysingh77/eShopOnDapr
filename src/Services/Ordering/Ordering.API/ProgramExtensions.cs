@@ -10,9 +10,9 @@ public static class ProgramExtensions
     public static void AddCustomConfiguration(this WebApplicationBuilder builder)
     {
         // Disabled temporarily until https://github.com/dapr/dotnet-sdk/issues/779 is resolved.
-        //builder.Configuration.AddDaprSecretStore(
-        //    "eshop-secretstore",
-        //    new DaprClientBuilder().Build());
+        builder.Configuration.AddDaprSecretStore(
+           "eshop-secretstore",
+           new DaprClientBuilder().Build());
     }
 
     public static void AddCustomSerilog(this WebApplicationBuilder builder)
@@ -100,7 +100,7 @@ public static class ProgramExtensions
             .AddCheck("self", () => HealthCheckResult.Healthy())
             .AddDapr()
             .AddSqlServer(
-                builder.Configuration["ConnectionStrings:OrderingDB"],
+                builder.Configuration["ConnectionStrings.OrderingDB"],
                 name: "OrderingDB-check",
                 tags: new string[] { "orderdb" });
 
@@ -117,7 +117,7 @@ public static class ProgramExtensions
 
     public static void AddCustomDatabase(this WebApplicationBuilder builder) =>
         builder.Services.AddDbContext<OrderingDbContext>(
-            options => options.UseSqlServer(builder.Configuration["ConnectionStrings:OrderingDB"]));
+            options => options.UseSqlServer(builder.Configuration["ConnectionStrings.OrderingDB"]));
 
     public static void ApplyDatabaseMigration(this WebApplication app)
     {
